@@ -78,4 +78,5 @@
   color: #ffffff;
   padding: 1rem;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }

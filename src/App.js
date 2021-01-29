@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import "./App.css";
 import { CreateItem } from "./CreateItem";
 
-const createTask = (task, index, handleClick) => {
+const createTask = (task, handleClick) => {
   return (
     <li className="List-item">
       <span className="Item-priority">{`${task.priority}.`}</span>
       <span className="Item-name">{task.name}</span>
-      <button className="button" onClick={() => handleClick(task.name)}>
+      <button
+        className="button"
+        onClick={() => handleClick(task.priority)}
+      >
         Delete
       </button>
     </li>
@@ -16,27 +19,31 @@ const createTask = (task, index, handleClick) => {
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const highestPriority = tasks.length ? tasks[tasks.length - 1].priority : 0;
 
   const addTask = (item, priority) => {
+    const dict = prioritiesDictionary();
+    if (dict[priority] === 1) {
+      alert(
+        "You cannot add an item with a priority that has already been assigned"
+      );
+      return;
+    }
     const newTasks = [...tasks, { name: item, priority }];
+    newTasks.sort((task1, task2) => task1.priority - task2.priority);
     setTasks(newTasks);
   };
 
-  const handleClick = (taskName) => {
+  const handleClick = (taskPriority) => {
     const newTasks = [...tasks];
-    const removedTaskList = newTasks.filter((task) => task.name !== taskName);
+    const removedTaskList = newTasks.filter(
+      (task) => task.priority !== taskPriority
+    );
     setTasks(removedTaskList);
   };
 
   const findMissingPriorities = () => {
-    if (!tasks.length) {
-      return null;
-    }
-    const newTasks = [...tasks];
-    const sortedTasks = newTasks.sort((task1, task2) => task1.priority - task2.priority);
-    const highestPriority = sortedTasks[sortedTasks.length - 1].priority;
-    const dict = prioritiesDictionary(highestPriority, sortedTasks);
-
+    const dict = prioritiesDictionary();
     const missingPrioritiesList = [];
     for (let task in dict) {
       if (dict[task] === 0) {
@@ -46,12 +53,10 @@ function App() {
     return missingPrioritiesList;
   };
 
-  const prioritiesDictionary = (highestPriority, sortedTasks) => {
+  const prioritiesDictionary = () => {
     const dict = {};
     for (let i = 1; i <= highestPriority; i++) {
-      const taskPriority = sortedTasks.find(
-        (task) => task.priority === i
-      );
+      const taskPriority = [...tasks].find((task) => task.priority === i);
       dict[i] = taskPriority ? 1 : 0;
     }
     return dict;
@@ -64,7 +69,7 @@ function App() {
       <div className="List-container">
         <h3 className="List-header">Todo Items</h3>
         <ul className="List">
-          {tasks.map((task, index) => createTask(task, index, handleClick))}
+          {tasks.map((task) => createTask(task, handleClick))}
         </ul>
       </div>
       {findMissingPriorities() ? (

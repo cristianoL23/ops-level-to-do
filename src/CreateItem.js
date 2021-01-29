@@ -30,6 +30,12 @@ const CreateItem = ({ addTask }) => {
       setItemPriority("");
       return;
     }
+    if (parseInt(itemPriority, 10) >= Number.MAX_VALUE) {
+      alert("The priority ist too large.");
+      setTodoItem("");
+      setItemPriority("");
+      return;
+    }
     addTask(todoItem, parseInt(itemPriority, 10));
     setTodoItem("");
     setItemPriority("");
