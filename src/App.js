@@ -33,7 +33,7 @@ function App() {
       return null;
     }
     const newTasks = [...tasks];
-    const sortedTasks = newTasks.sort((task1, task2) => task1 - task2);
+    const sortedTasks = newTasks.sort((task1, task2) => task1.priority - task2.priority);
     const highestPriority = sortedTasks[sortedTasks.length - 1].priority;
     const dict = prioritiesDictionary(highestPriority, sortedTasks);
 
@@ -50,7 +50,7 @@ function App() {
     const dict = {};
     for (let i = 1; i <= highestPriority; i++) {
       const taskPriority = sortedTasks.find(
-        (task) => parseInt(task.priority, 10) === i
+        (task) => task.priority === i
       );
       dict[i] = taskPriority ? 1 : 0;
     }

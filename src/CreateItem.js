@@ -14,9 +14,23 @@ const CreateItem = ({ addTask }) => {
       alert(
         "You must include both an item name and priority when adding an item."
       );
+      setTodoItem("");
+      setItemPriority("");
       return;
     }
-    addTask(todoItem, itemPriority);
+    if (isNaN(parseInt(itemPriority, 10))) {
+      alert("The priority must be a number.");
+      setTodoItem("");
+      setItemPriority("");
+      return;
+    }
+    if (parseInt(itemPriority, 10) < 0) {
+      alert("The priority must be a positive number.");
+      setTodoItem("");
+      setItemPriority("");
+      return;
+    }
+    addTask(todoItem, parseInt(itemPriority, 10));
     setTodoItem("");
     setItemPriority("");
   };
